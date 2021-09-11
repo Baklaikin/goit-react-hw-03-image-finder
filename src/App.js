@@ -1,25 +1,37 @@
-import logo from "./logo.svg";
+import React, { Component } from "react";
+import { SearchForm } from "components/searchForm/";
 import "./App.css";
+// import axios from "axios";
+import { FetchCollection } from "./services/FetchApi";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    pictureName: null,
+    pictures: [],
+    largeImage: null,
+    status: "idle",
+    page: 1,
+  };
+
+  handleInput = (searchWord) => {
+    this.setState({ pictureName: searchWord });
+  };
+
+  async componentDidUpdate(prevProps, prevState) {
+    const { pictureName, page } = this.state;
+    if (pictureName !== prevState.pictureName) {
+      const pictures = await FetchCollection({ pictureName, page });
+      this.setState({ pictures });
+    }
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <SearchForm handleInput={this.handleInput} />
+      </div>
+    );
+  }
 }
 
 export default App;
