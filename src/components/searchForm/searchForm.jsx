@@ -1,13 +1,31 @@
+import { BsSearch } from "react-icons/bs";
+import { toast } from "react-toastify";
 
-export const SearchForm = ({ handleInput }) => {
+export const SearchForm = ({ onSubmit }) => {
     const name = (event) => {
         event.preventDefault();
-        handleInput(event.target.searchInput.value);
+        const word = event.target.searchForm.value;
+        if (word === '') {
+            toast.warn('Введите слово')
+            return;
+        }
+        onSubmit(word);
     };
     return (
-        <form onSubmit={name}>
-            <button type="submit">send</button>
-            <input type="text" name="searchInput"/>
-            </form>
-        )
+        <header className="Searchbar">
+           <form className="SearchForm" onSubmit={name}>
+              <button type="submit" className="SearchForm-button">
+                 <span className="SearchForm-button-label"><BsSearch/></span>
+              </button>
+
+              <input
+                 className="SearchFormInput"
+                 name="searchForm"
+                 type="text"
+                 autoComplete="off"
+                 autoFocus
+                 placeholder="Search images and photos"/>
+         </form>
+        </header>
+    )
     }
