@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { SearchForm } from "components/searchForm/";
-import { ImageList } from "components/ImageList/ImageList";
+import { SearchBar } from "components/searchBar";
+import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { LoadMore } from "components/LoadMoreBtn/LoadMore";
 import "./App.css";
 import { FetchCollection } from "./services/FetchApi";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Container } from "App.styled";
 
 class App extends Component {
   state = {
@@ -22,25 +23,47 @@ class App extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     const { pictureName, page } = this.state;
-    if (pictureName !== prevState.pictureName || page !== prevState.page) {
+    const searchWordIsNew = pictureName !== prevState.pictureName;
+    const pageIsNew = page !== prevState.page;
+    const arrayIsNotEmpty = this.state.pictures.length === 0;
+
+    if (searchWordIsNew || pageIsNew || arrayIsNotEmpty) {
       const pictures = await FetchCollection({ pictureName, page });
-      this.setState({ pictures, page });
+      this.setState((prevState) => {
+        let newArr = [];
+        newArr = [...prevState.pictures, ...pictures];
+        return { pictures: newArr };
+      });
     }
+    this.scrollSmoth();
   }
 
+  scrollSmoth = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
   onLoadMoreClick = () => {
-    this.setState((prevState) => prevState.page + 2);
+    this.setState((prevState) => ({ page: prevState.page + 1 }));
     console.log(this.state.page);
   };
 
   render() {
+    const showLoadMoreButton = this.state.pictures.length > 0;
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+
     return (
-      <div className="App">
-        <SearchForm onSubmit={this.handleInput} />
-        <ImageList images={this.state.pictures} />
-        <LoadMore onAction={this.onLoadMoreClick} />
+      <Container>
+        <SearchBar onSubmit={this.handleInput} />
+        <ImageGallery images={this.state.pictures} />
+        {showLoadMoreButton && <LoadMore onAction={this.onLoadMoreClick} />}
         <ToastContainer />
-      </div>
+      </Container>
     );
   }
 }

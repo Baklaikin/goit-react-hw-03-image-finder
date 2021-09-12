@@ -1,7 +1,8 @@
-import { BsSearch } from "react-icons/bs";
+// import { BsSearch } from "react-icons/bs";
 import { toast } from "react-toastify";
+import { Header, SearchButton, Span, Input, Form } from "components/searchBar/searchBar.styled";
 
-export const SearchForm = ({ onSubmit }) => {
+export const SearchBar = ({ onSubmit }) => {
     const name = (event) => {
         event.preventDefault();
         const word = event.target.searchForm.value;
@@ -12,20 +13,19 @@ export const SearchForm = ({ onSubmit }) => {
         onSubmit(word);
     };
     return (
-        <header className="Searchbar">
-           <form className="SearchForm" onSubmit={name}>
-              <button type="submit" className="SearchForm-button">
-                 <span className="SearchForm-button-label"><BsSearch/></span>
-              </button>
+        <Header>
+           <Form onSubmit={name}>
+              <SearchButton type="submit">
+                 <Span></Span>
+              </SearchButton>
 
-              <input
-                 className="SearchFormInput"
+              <Input
                  name="searchForm"
                  type="text"
                  autoComplete="off"
                  autoFocus
                  placeholder="Search images and photos"/>
-         </form>
-        </header>
+         </Form>
+        </Header>
     )
     }
