@@ -108,7 +108,11 @@ class App extends Component {
           largePicture={this.bigPictureHandler}
         />
         {showLoadMoreButton && <LoadMore onAction={this.onLoadMoreClick} />}
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          autoClose={1200}
+          hideProgressBar={true}
+        />
         {showModal && (
           <Modal picture={this.state.largeImage} onClick={this.toggleModal} />
         )}
