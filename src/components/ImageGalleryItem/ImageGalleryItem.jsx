@@ -1,10 +1,10 @@
 import { Item, Image } from "components/ImageGalleryItem/ImageGalleryItem.styled";
 
-export const ImageGalleryItem = ({ images }) => {
-   return images.map(({ id, webformatURL, tags }) => {
+export const ImageGalleryItem = ({ images, getBigImage }) => {
+    return images.map((image) => {
             return (
-                <Item key={id}>
-                    <Image src={webformatURL} alt={tags[0]} />
+                <Item key={image.id}>
+                    <Image src={image.webformatURL} alt={image.tags[0]} onClick={()=>getBigImage(image.largeImageURL) }/>
                 </Item>)
         })
 }
