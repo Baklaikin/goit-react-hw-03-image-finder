@@ -3,13 +3,14 @@ import { SearchBar } from "components/searchBar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { LoadMore } from "components/LoadMoreBtn/LoadMore";
 import { Modal } from "components/Modal/Modal";
-import "./App.css";
 import { FetchCollection } from "./services/FetchApi";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Container } from "App.styled";
 import { LoaderSpinner } from "components/Loader/Loader";
+import PropTypes from "prop-types";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import "./App.styled";
+import "react-toastify/dist/ReactToastify.css";
 
 class App extends Component {
   state = {
@@ -31,7 +32,7 @@ class App extends Component {
     const pageIsNew = page !== prevState.page;
 
     if (searchWordIsNew) {
-      this.setState({ status: "loading" });
+      this.setState({ status: "pending" });
       try {
         this.setState({ pictures: [], page: 1 });
         const pictures = await FetchCollection({ pictureName, page });
@@ -44,7 +45,7 @@ class App extends Component {
     }
 
     if (searchWordIsNew || pageIsNew) {
-      this.setState({ status: "loading" });
+      this.setState({ status: "pending" });
       try {
         const pictures = await FetchCollection({ pictureName, page });
         this.setState((prevState) => {
@@ -74,10 +75,9 @@ class App extends Component {
     });
   };
 
-  toggleModal = () =>
-    this.setState((prevState) => {
-      return { openModal: !this.state.openModal };
-    });
+  toggleModal = (e) => {
+    this.setState({ openModal: !this.state.openModal });
+  };
 
   onLoadMoreClick = () =>
     this.setState((prevState) => ({ page: prevState.page + 1 }));
@@ -97,7 +97,7 @@ class App extends Component {
   render() {
     const showLoadMoreButton = this.state.pictures.length > 0;
     const showModal = this.state.openModal;
-    const showLoader = this.state.status === "loading";
+    const showLoader = this.state.status === "pending";
 
     return (
       <Container>
@@ -116,5 +116,14 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  pictureName: PropTypes.string,
+  pictures: PropTypes.array,
+  largeImage: PropTypes.string,
+  status: PropTypes.string,
+  page: PropTypes.number,
+  openModal: PropTypes.bool,
+};
 
 export default App;
